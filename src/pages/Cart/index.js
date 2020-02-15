@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   MdRemoveCircleOutline,
   MdAddCircleOutline,
   MdDelete,
 } from 'react-icons/md';
+import * as CartActions from '../../store/modules/cart/actions';
 import * as S from './styles';
 
-function Cart({ cart, dispatch }) {
+function Cart({ cart, removeFromCart }) {
   return (
     <S.Container>
       <S.ProductTable>
@@ -51,9 +53,7 @@ function Cart({ cart, dispatch }) {
                   <MdDelete
                     size={20}
                     color="#7159c1"
-                    onClick={() =>
-                      dispatch({ type: 'REMOVE_FROM_CART', id: product.id })
-                    }
+                    onClick={() => removeFromCart(product.id)}
                   />
                 </button>
               </td>
@@ -77,4 +77,7 @@ const mapStateToProps = state => ({
   cart: state.cart,
 });
 
-export default connect(mapStateToProps)(Cart);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);
