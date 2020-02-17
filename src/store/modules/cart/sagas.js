@@ -12,9 +12,18 @@ function* addToCart({ id }) {
     state.cart.find(p => p.id === id)
   );
 
+  const stock = yield call(api.get, `/stock/${id}`);
+  const stockAmount = stock.data.amount;
+  const currentAmount = productExists ? productExists.amount : 0;
+  const amount = currentAmount + 1;
+
+  if (amount > stockAmount) {
+    // Mensagem para o usuário
+    return;
+  }
+
   if (productExists) {
     // Atualiza apenas a qtd (amount)
-    const amount = productExists.amount + 1;
     yield put(updateAmount(id, amount));
   } else {
     // Inclui o produto no carrinho
